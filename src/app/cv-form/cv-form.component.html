@@ -1,0 +1,138 @@
+<form [formGroup]="cvForm" (ngSubmit)="onSubmit()" class="container mt-4">
+    <h5 class="mb-3 font-Weight-500 font-2">Personal Information</h5>
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter your name">
+          @if (cvForm.get('name')?.invalid && cvForm.get('name')?.touched) {
+            <mat-error>Name is required.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+  
+      <div class="col-md-3 mb-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" placeholder="Enter your email">
+          @if (cvForm.get('email')?.invalid && cvForm.get('email')?.touched) {
+            <mat-error>Valid email is required.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <div class="col-md-3 mb-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" placeholder="Enter your phone number">
+        </mat-form-field>
+      </div>
+  
+      <div class="col-md-3 mb-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Professional Summary</mat-label>
+          <textarea rows="1" matInput formControlName="professionalSummary" placeholder="Enter your summary"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <h5 class="my-2">Work Experience</h5>
+    <div formArrayName="workExperience">
+      @for (item of workExperience.controls; track item; let i = $index) {
+        <div [formGroupName]="i" class="border p-3 mb-3 rounded">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Company</mat-label>
+                <input matInput formControlName="company" placeholder="Enter company name">
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Position</mat-label>
+                <input matInput formControlName="position" placeholder="Enter position">
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Start Date</mat-label>
+                <input matInput formControlName="startDate" type="date">
+              </mat-form-field>
+            </div>
+            <div class="col-md-3 mb-3">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>End Date</mat-label>
+                <input matInput formControlName="endDate" type="date">
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Enter job description"></textarea>
+          </mat-form-field>
+  
+          <button mat-raised-button color="warn" type="button" (click)="removeWorkExperience(i)">Remove</button>
+        </div>
+      }
+      <button mat-raised-button color="primary" type="button" (click)="addWorkExperience()">Add Work Experience</button>
+    </div>
+  
+    <h5 class="my-2">Education</h5>
+    <div formArrayName="education">
+        @for (item of education.controls; track item;let i = $index) {
+      <div [formGroupName]="i" class="border p-3 mb-3 rounded">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Institution</mat-label>
+              <input matInput formControlName="institution" placeholder="Enter institution name">
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Degree</mat-label>
+              <input matInput formControlName="degree" placeholder="Enter your degree">
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Field of Study</mat-label>
+              <input matInput formControlName="fieldOfStudy" placeholder="Enter field of study">
+            </mat-form-field>
+          </div>
+          <div class="col-md-3 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Start Date</mat-label>
+              <input matInput formControlName="startDate" type="date">
+            </mat-form-field>
+          </div>
+        </div>
+  
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+          <mat-label>End Date</mat-label>
+          <input matInput formControlName="endDate" type="date">
+        </mat-form-field>
+  
+        <button mat-raised-button color="warn" type="button" (click)="removeEducation(i)">Remove</button>
+      </div>
+    }
+      <button mat-raised-button color="primary" type="button" (click)="addEducation()">Add Education</button>
+    </div>
+  
+    <h5 class="my-2">Skills</h5>
+    <div formArrayName="skills">
+      @for (item of skills.controls; track item; let i = $index;) {
+        <div class="d-flex align-items-center mb-3">
+          <mat-form-field appearance="outline" class="w-75">
+            <mat-label>Skill</mat-label>
+            <input matInput [formControlName]="i" placeholder="Enter a skill with coma">
+          </mat-form-field>
+          <button mat-raised-button color="warn" type="button" class="ms-3" (click)="removeSkill(i)">Remove</button>
+        </div>
+      }
+      <button mat-raised-button color="primary" type="button" (click)="addSkill()">Add Skill</button>
+    </div>
+  
+    <button mat-raised-button color="accent" type="submit" class="mt-4 w-100" >Submit</button>
+  </form>
+  
