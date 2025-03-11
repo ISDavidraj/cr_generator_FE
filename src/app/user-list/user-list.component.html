@@ -47,13 +47,14 @@
           <button mat-icon-button (click)="view(element)">
             <mat-icon>visibility</mat-icon>
           </button>
-          <button mat-icon-button (click)="edit(element)">
+          <!-- <button mat-icon-button (click)="edit(element)">
             <mat-icon>edit</mat-icon>
-          </button>
+          </button> -->
         </td>
       </ng-container>
   
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>

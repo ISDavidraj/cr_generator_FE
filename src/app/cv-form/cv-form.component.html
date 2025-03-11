@@ -133,6 +133,6 @@
       <button mat-raised-button color="primary" type="button" (click)="addSkill()">Add Skill</button>
     </div>
   
-    <button mat-raised-button color="accent" type="submit" class="mt-4 w-100" >Submit</button>
+    <button mat-raised-button color="accent" type="submit" [disabled]="cvForm.valid" class="mt-4 w-100" >Submit</button>
   </form>
   

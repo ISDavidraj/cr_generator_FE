@@ -131,8 +131,8 @@ endPickers: any;
         "Node.js"
       ]
     }
-    // if (this.cvForm.valid) {
-      this.http.post('http://localhost:5000/api/users', payload)
+    if (this.cvForm.valid) {
+      this.http.post('http://localhost:5000/api/users', this.cvForm.value)
         .subscribe(
           (response) => {
             console.log('CV saved successfully:', response);
@@ -143,8 +143,8 @@ endPickers: any;
             alert('Error saving CV. Please try again.');
           }
         );
-    // } else {
-    //   alert('Please fill out all required fields.');
-    // }
+    } else {
+      alert('Please fill out all required fields.');
+    }
   }
 }

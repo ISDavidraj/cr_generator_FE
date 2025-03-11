@@ -9,8 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table'; 
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'; 
 import { CvFormComponent } from '../cv-form/cv-form.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-user-list',
@@ -24,13 +26,15 @@ import { CvFormComponent } from '../cv-form/cv-form.component';
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    MatNativeDateModule],
+    MatNativeDateModule,
+    MatPaginatorModule,
+    HttpClientModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss'
 })
 export class UserListComponent {
   displayedColumns: string[] = ['name', 'email', 'phone', 'education', 'actions'];
-  dataSource = [
+  dataSource = new MatTableDataSource([
     {
       id: 1,
       name: 'John Doe',
@@ -46,9 +50,22 @@ export class UserListComponent {
         },
       ],
     },
-  ];
+  ]);
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog,private http: HttpClient) {
+    this.getAllUsers();
+  }
+  getAllUsers() {
+    this.http.get<any[]>('http://localhost:5000/api/users').subscribe(
+      (response) => {
+        this.dataSource = new MatTableDataSource(response);
+      },
+      (error) => {
+        console.error('Error fetching users:', error);
+      }
+    );
+  }
+  
 
   openAddDialog() {
     const dialogRef = this.dialog.open(CvFormComponent, {
@@ -61,32 +78,49 @@ export class UserListComponent {
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dataSource = [...this.dataSource, result];
+        this.dataSource.data = [...this.dataSource.data, result];
       }
     });
   }
   
 
   print(element: any) {
-    console.log('Print:', element);
+    this.http.get(`http://localhost:5000/api/users/${element}/generate-pdf`, { responseType: 'blob' })
+      .subscribe((response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `User_${element}_CV.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, (error) => {
+        console.error('Error downloading PDF:', error);
+      });
   }
 
   view(element: any) {
-    console.log('View:', element);
+    
   }
 
-  edit(element: any) {
-    // const dialogRef = this.dialog.open(CvFormComponent, {
-    //   width: '600px',
-    //   data: element,
-    // });
+  // edit(element: any) {
+  //   const dialogRef = this.dialog.open(CvFormComponent, {
+  //     width: '90%',     
+  //     maxWidth: '90vw',
+  //     height: '90%',
+  //     maxHeight: '90vh', 
+  //     panelClass: 'full-screen-dialog',
+  //     data: element,
+  //   });
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result) {
-    //     const index = this.dataSource.findIndex((item) => item.id === result.id);
-    //     this.dataSource[index] = result;
-    //     this.dataSource = [...this.dataSource];
-    //   }
-    // });
-  }
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     if (result) {
+  //       const index = this.dataSource.findIndex((item) => item.id === result.id);
+  //       this.dataSource[index] = result;
+  //       this.dataSource = [...this.dataSource];
+  //     }
+  //   });
+  // }
 }
