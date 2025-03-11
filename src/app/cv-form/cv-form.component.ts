@@ -11,7 +11,7 @@ import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 
 @Component({
@@ -30,7 +30,7 @@ export class CvFormComponent {
 startPickers: any;
 endPickers: any;
 
-  constructor(private fb: FormBuilder, private http: HttpClient, @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(private fb: FormBuilder, private http: HttpClient, @Inject(MAT_DIALOG_DATA) public data: any,  private dialogRef: MatDialogRef<CvFormComponent>) {
     this.cvForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -178,6 +178,7 @@ endPickers: any;
           (response) => {
             console.log('CV saved successfully:', response);
             alert('CV saved successfully!');
+            this.dialogRef.close();
           },
           (error) => {
             console.error('Error saving CV:', error);

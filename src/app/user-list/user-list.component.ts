@@ -117,11 +117,7 @@ export class UserListComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const index = this.dataSource.data.findIndex((item) => item.id === result.id);
-        if (index !== -1) {
-        this.dataSource.data[index] = result;
-        this.dataSource.data = [...this.dataSource.data];
-        }
+        this.getAllUsers();
       }
     });
   }
