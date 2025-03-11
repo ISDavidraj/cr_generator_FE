@@ -105,22 +105,24 @@ export class UserListComponent {
     
   }
 
-  // edit(element: any) {
-  //   const dialogRef = this.dialog.open(CvFormComponent, {
-  //     width: '90%',     
-  //     maxWidth: '90vw',
-  //     height: '90%',
-  //     maxHeight: '90vh', 
-  //     panelClass: 'full-screen-dialog',
-  //     data: element,
-  //   });
+  edit(element: any) {
+    const dialogRef = this.dialog.open(CvFormComponent, {
+      width: '90%',     
+      maxWidth: '90vw',
+      height: '90%',
+      maxHeight: '90vh', 
+      panelClass: 'full-screen-dialog',
+      data: element,
+    });
 
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     if (result) {
-  //       const index = this.dataSource.findIndex((item) => item.id === result.id);
-  //       this.dataSource[index] = result;
-  //       this.dataSource = [...this.dataSource];
-  //     }
-  //   });
-  // }
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const index = this.dataSource.data.findIndex((item) => item.id === result.id);
+        if (index !== -1) {
+        this.dataSource.data[index] = result;
+        this.dataSource.data = [...this.dataSource.data];
+        }
+      }
+    });
+  }
 }

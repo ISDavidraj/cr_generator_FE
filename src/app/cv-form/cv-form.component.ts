@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
@@ -11,6 +11,7 @@ import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class CvFormComponent {
 startPickers: any;
 endPickers: any;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.cvForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -39,10 +40,50 @@ endPickers: any;
       education: this.fb.array([]),
       skills: this.fb.array([])
     });
-    this.addWorkExperience();
-    this.addEducation();
-    this.addSkill();
+    if (this.data) {
+      this.setFormValues(this.data);
+    } else {
+      this.addWorkExperience();
+      this.addEducation();
+      this.addSkill();
+    }
   }
+  setFormValues(data: any): void {
+    this.cvForm.patchValue({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      professionalSummary: data.professionalSummary
+    });
+
+    this.workExperience.clear();
+    data.workExperience.forEach((exp: any) => {
+      this.workExperience.push(this.fb.group({
+        company: [exp.company, Validators.required],
+        position: [exp.position, Validators.required],
+        startDate: [exp.startDate, Validators.required],
+        endDate: [exp.endDate, Validators.required],
+        description: [exp.description]
+      }));
+    });
+
+    this.education.clear();
+    data.education.forEach((edu: any) => {
+      this.education.push(this.fb.group({
+        institution: [edu.institution, Validators.required],
+        degree: [edu.degree, Validators.required],
+        fieldOfStudy: [edu.fieldOfStudy, Validators.required],
+        startDate: [edu.startDate, Validators.required],
+        endDate: [edu.endDate, Validators.required]
+      }));
+    });
+
+    this.skills.clear();
+    data.skills.forEach((skill: any) => {
+      this.addSkill(skill);
+    });
+  }
+
   get workExperience(): FormArray {
     return this.cvForm.get('workExperience') as FormArray;
   }
@@ -75,8 +116,8 @@ endPickers: any;
     }));
   }
 
-  addSkill(): void {
-    this.skills.push(this.fb.control('', Validators.required));
+  addSkill(skill: string = ''): void {
+    this.skills.push(this.fb.control(skill, Validators.required));
   }
 
   removeWorkExperience(index: number): void {
